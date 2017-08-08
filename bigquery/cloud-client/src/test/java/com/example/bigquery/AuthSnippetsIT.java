@@ -1,5 +1,5 @@
 /*
-  Copyright 2016, Google, Inc.
+  Copyright 2017, Google, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,13 +14,9 @@
   limitations under the License.
 */
 
-package com.example.pubsub;
+package com.example.bigquery;
 
 import static com.google.common.truth.Truth.assertThat;
-
-import com.google.cloud.ServiceOptions;
-import com.google.cloud.pubsub.spi.v1.TopicAdminClient;
-import com.google.pubsub.v1.TopicName;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,50 +25,31 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.PrintStream;
 
-/**
- * Tests for quickstart sample.
- */
+/** Tests for auth samples. */
 @RunWith(JUnit4.class)
 @SuppressWarnings("checkstyle:abbreviationaswordinname")
-public class QuickstartSampleIT {
-
+public class AuthSnippetsIT {
   private ByteArrayOutputStream bout;
   private PrintStream out;
-
-  private void deleteTestTopic() throws Exception {
-    try (TopicAdminClient topicAdminClient = TopicAdminClient.create()) {
-      topicAdminClient.deleteTopic(
-          TopicName.create(ServiceOptions.getDefaultProjectId(), "my-new-topic"));
-    } catch (IOException e) {
-      System.err.println("Error deleting topic " + e.getMessage());
-    }
-  }
 
   @Before
   public void setUp() {
     bout = new ByteArrayOutputStream();
     out = new PrintStream(bout);
     System.setOut(out);
-    try {
-      deleteTestTopic();
-    } catch (Exception e) {
-      //empty catch block
-    }
   }
 
   @After
-  public void tearDown() throws Exception {
+  public void tearDown() {
     System.setOut(null);
-    deleteTestTopic();
   }
 
   @Test
-  public void testQuickstart() throws Exception {
-    QuickstartSample.main();
+  public void testAuthSnippetsImplicit() throws Exception {
+    AuthSnippets.main(new String[]{"implicit"});
     String got = bout.toString();
-    assertThat(got).contains("my-new-topic created.");
+    assertThat(got).contains("Datasets:");
   }
 }
